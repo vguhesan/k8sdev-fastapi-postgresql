@@ -1,0 +1,35 @@
+services:
+  api:
+    build:
+      context: .
+      target: builder
+    container_name: fastapi-application
+    environment:
+      PORT: 8000
+    ports:
+      - "8000:8000"
+    restart: "no"
+    networks:
+      - fastapi-postgres
+  db:
+    image: postgres
+    restart: always
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - fastapi-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+    expose:
+      - 5432
+volumes:
+  db-data:
+secrets:
+  db-password:
+    file: ./db/password.txt
+networks:
+  fastapi-postgres:
