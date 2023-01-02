@@ -9,7 +9,7 @@
 
 This template has been extended from [FastAPI-Awesome-Compose](https://github.com/docker/awesome-compose/tree/master/fastapi). _I am building upon the shoulders of giants, following their off beaten path. So, thank you._ The base template has the middleware but lacks Postgres DB backend integrated into the template. This body of work takes the Python FastAPI template and extends it to add the PostgreSQL DB layer on the backend. It also bootstraps the creation of an AppDB database (outside of the postgres DB) and creates a Bookstore schema. It goes further to bootsrap the initialization to create a Book table and auto imports the Books data available in the public domain.
 
-## Sections
+## Use it with...
 
 - [Docker](#how-to-use-with-docker-development-environments)
 - [Podman](#how-to-use-this-template-with-podmanpodman-desktop-development-environment)
