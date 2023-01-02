@@ -14,22 +14,21 @@ services:
   db:
     image: postgres
     restart: always
-    secrets:
-      - db-password
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./db/sql/:/docker-entrypoint-initdb.d/
     networks:
       - fastapi-postgres
+    # TODO: Change me to secrets. See:
+    # - https://github.com/docker-library/docs/blob/master/postgres/README.md
+    # - https://hub.docker.com/_/postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: appdb
+      POSTGRES_PASSWORD: changeme
     expose:
       - 5432
 volumes:
   db-data:
-secrets:
-  db-password:
-    file: ./db/password.txt
 networks:
   fastapi-postgres:

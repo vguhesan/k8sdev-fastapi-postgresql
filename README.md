@@ -84,3 +84,37 @@ podman-compose -f compose.yaml up -d
 
 ![Container View](docs/images/podman-container-view.jpg)
 ![Volume View](docs/images/podman-volume-view.jpg)
+
+# To reinitialize the Postgres Volume
+
+```
+# Stop and delete the containers, then:
+
+podman volume list | grep "db-data"
+podman volume rm ${volume-name}
+-or-
+podman volume rm  $(podman volume list | grep "db-data" | cut -d " "  -f2-)
+```
+
+# To connect via psql
+
+```
+# psql [OPTION]... [DBNAME [USERNAME]]
+
+# To connect to main DB
+podman exec -it $(podman container list | grep "docker.io/library/postgres" | cut -d " " -f1) psql postgres postgres;
+
+# To connect to appdb (bookstore schema is under appdb)
+podman exec -it $(podman container list | grep "docker.io/library/postgres" | cut -d " " -f1) psql appdb appusr;
+
+# After the psql prompt:
+appdb=> \dt bookstore.*;
+          List of relations
+  Schema   | Name | Type  |  Owner
+-----------+------+-------+----------
+ bookstore | book | table | postgres
+(1 row)
+appdb=> SELECT * FROM bookstore.book LIMIT 10;
+... removed intentionally
+(10 rows)
+```
