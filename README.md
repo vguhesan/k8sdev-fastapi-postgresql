@@ -1,3 +1,5 @@
+![DevContainer Podman Python FastAPI Postgres Aewesome Template](docs/images/podman_python_fastapi_postgres_template.png)
+
 ## Compose sample application that contains:
 
 - Python FastAPI (for middleware)
