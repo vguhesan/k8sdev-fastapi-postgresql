@@ -131,3 +131,41 @@ appdb=> SELECT * FROM bookstore.book LIMIT 10;
 ... removed intentionally
 (10 rows)
 ```
+
+## Iterative Development in Podman
+
+When you modify your application (FastAPI Python code), you want to rerun the following commands in sequence:
+
+```
+podman-compose down
+podman-compose build
+podman-compose -f compose.yaml up -d
+```
+
+Repeating the three commands iteratively can become tedious very quick. To automate this process, you can leverage some tools available to you.
+
+Option #1: [FSWatch](https://github.com/emcrisostomo/fswatch)
+
+This utility is cross-platform (Linux, macOS, Windows). Install it based on your OS and then:
+
+```
+$ fswatch -or YOUR_PATHS | xargs -n1 -I{} YOUR_COMMAND
+```
+
+fswatch accepts a list of paths to monitor. The `-o` option asks the tool to group changes by batch, and the `-r` option stands for watching subdirectories recursively. Events are then sent through xargs to your command.
+
+Option #2: [Skaffold](https://skaffold.dev)
+
+This tool currently has support for `kubectl` and `minikube` (as of this writing), does not support `podman desktop` or `podman` yet. More on this at a future time.
+
+Now, let us leverage Option #1 to implement a rebuild lifecycle. See `rebuild-and-deploy` Bash script included here with this project.
+
+```
+fswatch -or ./app | xargs -n1 -I{} ./rebuild-and-deploy.sh
+```
+
+To stop watching, simply kill the above command. Simple as that.
+
+Now if you make any changes to the ./app/main.py file and you hit save. You will notice that it incrementally rebuilds and deploys it locally within your `Podman Desktop` leveraging `podman-compose` for the Container orchestration.
+
+Please bear in mind that this is not the efficient way to continually rebuild the container with each change. A more pragmatic and efficient approach will be to copy the content of the /app/\*\* to the container using a rsync strategy and to leverage `uvicorn` Python [FastAPI](https://fastapi.tiangolo.com/) server with the `--reload` option (like this: `uvicorn main:app --reload`) for the Docker RUN. More on this soon... Stay tuned.
